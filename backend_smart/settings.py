@@ -18,18 +18,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------------
 # CONFIGURACIONES BÁSICAS
 # -------------------------------
-SECRET_KEY = config('SECRET_KEY', default='clave_de_prueba_segura')
+SECRET_KEY = config('SECRET_KEY', default='v+6*+q)chl-+d%2((*ornrv1m9s=1+1q#@gen##@19aj9wwunz')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# ⚠️ Cambia * por tus dominios definitivos si quieres más seguridad
 ALLOWED_HOSTS = [
-    'backend-smartt.onrender.com',  # dominio backend
+    'backend-smartt.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
 
 # -------------------------------
-# API KEYS (seguras en variables de entorno)
+# API KEYS (variables de entorno)
 # -------------------------------
 API_KEY_IMGBB = config('API_KEY_IMGBB', default='')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
@@ -66,7 +65,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Debe ir arriba del CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  # Debe ir antes del CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -78,28 +77,24 @@ MIDDLEWARE = [
 # CORS Y CSRF
 # -------------------------------
 CORS_ALLOWED_ORIGINS = [
-    'https://frontend_smartt.onrender.com',  # tu dominio de frontend
+    'https://frontend-smartt.onrender.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
 
-
 CSRF_TRUSTED_ORIGINS = [
-    'https://backend_smartt.onrender.com',
-    'https://frontend_smartt.onrender.com',
+    'https://backend-smartt.onrender.com',
+    'https://frontend-smartt.onrender.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
 
 SESSION_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = True  # porque Render usa HTTPS
+SESSION_COOKIE_SECURE = True  # Render usa HTTPS
 
 # -------------------------------
 # URLS Y WSGI
@@ -125,7 +120,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend_smart.wsgi.application'
 
 # -------------------------------
-# BASE DE DATOS (PostgreSQL en Render)
+# BASE DE DATOS (PostgreSQL Render)
 # -------------------------------
 DATABASES = {
     'default': dj_database_url.config(
