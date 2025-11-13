@@ -78,7 +78,7 @@ MIDDLEWARE = [
 # CORS Y CSRF
 # -------------------------------
 CORS_ALLOWED_ORIGINS = [
-    'https://frontend-smartt.onrender.com',  # tu dominio de frontend
+    'https://frontend_smartt.onrender.com',  # tu dominio de frontend
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
@@ -86,8 +86,8 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://backend-smartt.onrender.com',
-    'https://frontend-smartt.onrender.com',
+    'https://backend_smartt.onrender.com',
+    'https://frontend_smartt.onrender.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
