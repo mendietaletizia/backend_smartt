@@ -135,14 +135,13 @@ WSGI_APPLICATION = 'backend_smart.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+import os
+import dj_database_url
 
 DATABASES = {
-    'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("DB_NAME"),
-        'USER': config("DB_USER"),
-        'PASSWORD': config("DB_PASSWORD"),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
 }
 
 
@@ -179,8 +178,10 @@ USE_TZ = True
 # -------------------------------
 # ARCHIVOS ESTÁTICOS Y MEDIA
 # -------------------------------
+DEBUG = False
+
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Solo busca la carpeta static si existe
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
