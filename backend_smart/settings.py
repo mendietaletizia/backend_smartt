@@ -18,14 +18,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------------
 # CONFIGURACIONES BÁSICAS
 # -------------------------------
-SECRET_KEY = config('SECRET_KEY', default='v+6*+q)chl-+d%2((*ornrv1m9s=1+1q#@gen##@19aj9wwunz')
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'backend-smartt.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
+def _split_env_list(value: str):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
+ALLOWED_HOSTS = _split_env_list(config(
+    'ALLOWED_HOSTS',
+    default='backend-smartt.onrender.com'
+))
 
 # -------------------------------
 # API KEYS (variables de entorno)
@@ -86,22 +89,19 @@ MIDDLEWARE = [
 # -------------------------------
 # CORS Y CSRF
 # -------------------------------
-CORS_ALLOWED_ORIGINS = [
-    'https://frontend-smartt.onrender.com',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-]
+CORS_ALLOWED_ORIGINS = _split_env_list(config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://frontend-smartt.onrender.com'
+))
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://backend-smartt.onrender.com',
-    'https://frontend-smartt.onrender.com',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-]
+CSRF_TRUSTED_ORIGINS = _split_env_list(config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://backend-smartt.onrender.com,https://frontend-smartt.onrender.com'
+))
 
 # -------------------------------
 # DEBUG LOG PARA RENDER (solo temporal)
@@ -138,17 +138,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend_smart.wsgi.application'
 
 # -------------------------------
-# BASE DE DATOS (PostgreSQL Render)
+# BASE DE DATOS (Render / local)
 # -------------------------------
+DATABASE_URL = config('DATABASE_URL')
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'smart_2gio',       # tu dbname de Render
-        'USER': 'smart_2gio_user',      # tu usuario
-        'PASSWORD': '6fkPHj2Qh5lczOBAT0Ly5brodhP1hFHm', # tu password
-        'HOST': 'dpg-d4als3he2q1c73b2uilg-a',         # host de Render
-        'PORT': '5432',         # puerto
-    }
+    "default": dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=config('DB_CONN_MAX_AGE', default=600, cast=int),
+        ssl_require=config('DB_SSL_REQUIRE', default=True, cast=bool)
+    )
 }
 
 # -------------------------------

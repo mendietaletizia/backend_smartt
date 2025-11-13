@@ -3,14 +3,11 @@
 
 # Configuración básica de Django
 SECRET_KEY=django-insecure-your-secret-key-here-change-in-production
-DEBUG=True
+DEBUG=False
 
-# Configuración de base de datos (PostgreSQL)
-DB_NAME=smartsales365
-DB_USER=postgres
-DB_PASSWORD=your_password_here
-DB_HOST=localhost
-DB_PORT=5432
+# Configuración de base de datos
+# Render (o cualquier hosting) requiere la URL completa:
+DATABASE_URL=postgresql://usuario:password@host:puerto/nombre_db
 
 # Configuración de ImgBB API (para subir imágenes)
 API_KEY_IMGBB=49879cfe2271fe3272c9864c92e980d1
@@ -23,8 +20,13 @@ EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
 
 # Configuración de desarrollo
-ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+ALLOWED_HOSTS=backend-smartt.onrender.com
+CORS_ALLOWED_ORIGINS=https://frontend-smartt.onrender.com
+CSRF_TRUSTED_ORIGINS=https://backend-smartt.onrender.com,https://frontend-smartt.onrender.com
+
+# Ajustes opcionales para base de datos remota
+DB_CONN_MAX_AGE=600
+DB_SSL_REQUIRE=True
 
 # Configuración de Stripe (TEST MODE)
 # Obtén tus claves de prueba en: https://dashboard.stripe.com/test/apikeys
