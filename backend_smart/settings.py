@@ -94,6 +94,14 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:5173',
 ]
 
+# -------------------------------
+# DEBUG LOG PARA RENDER (solo temporal)
+# -------------------------------
+print("🚀 CORS_ALLOWED_ORIGINS:", CORS_ALLOWED_ORIGINS)
+print("🚀 CSRF_TRUSTED_ORIGINS:", CSRF_TRUSTED_ORIGINS)
+print("🚀 ALLOWED_HOSTS:", ALLOWED_HOSTS)
+
+
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = True  # Render usa HTTPS
 
