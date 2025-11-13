@@ -85,6 +85,12 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_METHODS = ['*']
+
+
 CSRF_TRUSTED_ORIGINS = [
     'https://backend_smartt.onrender.com',
     'https://frontend_smartt.onrender.com',
