@@ -13,42 +13,34 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
-
+import dj_database_url  # ✅ asegúrate de tenerlo instalado (pip install dj-database-url)
 
 # -------------------------------
 # RUTAS BASE
 # -------------------------------
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # -------------------------------
 # CONFIGURACIONES BÁSICAS
 # -------------------------------
-
-SECRET_KEY = config('SECRET_KEY', default='...')
+SECRET_KEY = config('SECRET_KEY', default='clave_de_prueba_segura')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Configuración de ImgBB API
-API_KEY_IMGBB = config('API_KEY_IMGBB', default='49879cfe2271fe3272c9864c92e980d1')
+ALLOWED_HOSTS = ['*']  # ⚠️ para producción, puedes restringir luego tu dominio o el de Render
 
-# Configuración de Stripe
+# -------------------------------
+# API KEYS (seguras en variables de entorno)
+# -------------------------------
+API_KEY_IMGBB = config('API_KEY_IMGBB', default='')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
-
-
-ALLOWED_HOSTS = ['*']  # Permite todas las conexiones (para desarrollo)
 
 # -------------------------------
 # APLICACIONES INSTALADAS
 # -------------------------------
 INSTALLED_APPS = [
-     # Apps de Django
+    # Django core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,11 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Django REST Framework y CORS
+    # Terceros
     'rest_framework',
     'corsheaders',
 
-    # Tus apps personalizadas
+    # Apps propias
     'autenticacion_usuarios',
     'dashboard_inteligente',
     'productos',
@@ -68,13 +60,13 @@ INSTALLED_APPS = [
     'ventas_carrito',
 ]
 
+# -------------------------------
+# MIDDLEWARE
+# -------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
-    # Middleware para permitir conexión entre backend y frontend
     'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -83,31 +75,21 @@ MIDDLEWARE = [
 ]
 
 # -------------------------------
-# CONFIGURACIÓN DE CORS / CSRF / COOKIES
+# CORS Y CSRF
 # -------------------------------
-# Para desarrollo con Vite (5173) y clientes móviles (Flutter) usando sesiones
-# Nota: Vite usa proxy /api→8000, así que en dev navegador no requiere CORS,
-# pero lo dejamos listo para clientes externos.
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://smart-backend.onrender.com',  # ⚙️ agrega tu dominio de Render aquí
     'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
 ]
 
-# Cookies de sesión en desarrollo
-SESSION_COOKIE_SAMESITE = 'Lax'   # Evita problemas básicos sin abrirlo demasiado
-SESSION_COOKIE_SECURE = False     # True solo en HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = not DEBUG  # True solo si está en HTTPS (Render sí lo está)
 
 # -------------------------------
 # URLS Y WSGI
@@ -117,7 +99,7 @@ ROOT_URLCONF = 'backend_smart.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Carpeta opcional para templates
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,70 +114,53 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend_smart.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-import os
-import dj_database_url
-
+# -------------------------------
+# BASE DE DATOS (PostgreSQL en Render)
+# -------------------------------
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
+        default=config('DATABASE_URL', default='sqlite:///db.sqlite3'),
+        conn_max_age=600,  # 🔹 mantiene la conexión activa más tiempo (Render recomienda esto)
     )
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# -------------------------------
+# VALIDADORES DE CONTRASEÑA
+# -------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# -------------------------------
+# INTERNACIONALIZACIÓN
+# -------------------------------
 LANGUAGE_CODE = 'es-es'
-
 TIME_ZONE = 'America/La_Paz'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # -------------------------------
 # ARCHIVOS ESTÁTICOS Y MEDIA
 # -------------------------------
-DEBUG = False
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Solo busca la carpeta static si existe
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-] if (BASE_DIR / 'static').exists() else []
+
+# Solo si existe la carpeta "static" localmente
+if (BASE_DIR / 'static').exists():
+    STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # -------------------------------
-# CONFIGURACIÓN DE DJANGO REST FRAMEWORK
+# REST FRAMEWORK
 # -------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Permitir acceso a todos por ahora
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -204,15 +169,13 @@ REST_FRAMEWORK = {
 }
 
 # -------------------------------
-# ID AUTOMÁTICO
+# AUTO FIELD
 # -------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # -------------------------------
-# CONFIGURACIÓN PARA PRODUCCIÓN/DESARROLLO
+# FIX: eliminar línea cortada al final
 # -------------------------------
-# En desarrollo, sirve archivos media con el servidor de desarrollo
-if DEBUG:
-    import mimetypes
-    mimetypes.add_type("text/css", ".css", True)
-    mimetypes.add_type("text/javascript", ".js", True)
+# No pongas código fuera de una condición, esa línea estaba mal:
+# mimetypes.add_type("text/javascript", ".js", True)
+# porque no hay 'import mimetypes' fuera del if
