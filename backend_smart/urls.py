@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import crear_admin
+from .views import setup_admin
 
 
 urlpatterns = [
@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/ventas/', include('ventas_carrito.urls')),
     path('api/dashboard/', include('dashboard_inteligente.urls')),
     path('api/reportes/', include('reportes_dinamicos.urls')),
-    path('crear-admin/', crear_admin),
+    path('setup-admin/', setup_admin),
 ]
 
 # Servir archivos media en desarrollo

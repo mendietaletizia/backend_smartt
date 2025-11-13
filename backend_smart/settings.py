@@ -36,6 +36,15 @@ STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 
 # -------------------------------
+# ENDPOINT DE CONFIGURACIÓN (solo despliegues)
+# -------------------------------
+ENABLE_SETUP_ENDPOINT = config('ENABLE_SETUP_ENDPOINT', default=False, cast=bool)
+SETUP_ADMIN_USERNAME = config('SETUP_ADMIN_USERNAME', default='admin')
+SETUP_ADMIN_EMAIL = config('SETUP_ADMIN_EMAIL', default='admin@example.com')
+SETUP_ADMIN_PASSWORD = config('SETUP_ADMIN_PASSWORD', default='')
+SETUP_ADMIN_TOKEN = config('SETUP_ADMIN_TOKEN', default='')
+
+# -------------------------------
 # APLICACIONES INSTALADAS
 # -------------------------------
 INSTALLED_APPS = [
@@ -132,10 +141,14 @@ WSGI_APPLICATION = 'backend_smart.wsgi.application'
 # BASE DE DATOS (PostgreSQL Render)
 # -------------------------------
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default='sqlite:///db.sqlite3'),
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'smart_2gio',       # tu dbname de Render
+        'USER': 'smart_2gio_user',      # tu usuario
+        'PASSWORD': '6fkPHj2Qh5lczOBAT0Ly5brodhP1hFHm', # tu password
+        'HOST': 'dpg-d4als3he2q1c73b2uilg-a',         # host de Render
+        'PORT': '5432',         # puerto
+    }
 }
 
 # -------------------------------
